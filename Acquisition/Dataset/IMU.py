@@ -2,66 +2,83 @@ from Acquisition.Filter import Filter
 from numpy import *
 
 
-class Accelerometer:
-    PITCH = "AccXg"
-    ROLL = "AccZg"
-    YAW = "AccYg"
+class InertialAxis:
+
+    def __init__(self, device):
+        self.device = device
+        self.filter = device.filter
+        self.dataset = device.dataset
+        self.X_OFFSET = 0
+        self.Y_OFFSET = 0
+        self.Z_OFFSET = 0
+        self.get_pitch = self.get_x
+        self.get_roll = self.get_y
+        self.get_yaw = self.get_z
+
+    def get_x(self):
+        return self.filter.set_data(self.get_raw_x()).get() + self.X_OFFSET
+
+    def get_y(self):
+        return self.filter.set_data(self.get_raw_y()).get() + self.Y_OFFSET
+
+    def get_z(self):
+        return self.filter.set_data(self.get_raw_z()).get() + self.Z_OFFSET
+
+    def get_raw_x(self):
+        # As strange as it might seem, it is right.
+        # Thanks Luke for the erroneous Axis
+        return -self.dataset.get_data()[self.device.AXIS_1]
+
+    def get_raw_y(self):
+        # Same
+        return self.dataset.get_data()[self.device.AXIS_2]
+
+    def get_raw_z(self):
+        # Same
+        return self.dataset.get_data()[self.device.AXIS_3]
+
+
+class Accelerometer(InertialAxis):
+    AXIS_1 = "AccXg"
+    AXIS_2 = "AccZg"
+    AXIS_3 = "AccYg"
 
     def __init__(self, dataset):
         self.dataset = dataset
         self.filter = Filter()
         self.filter.set_type(Filter.MEDIAN)
-
-    def get_pitch(self):
-        return self.filter.set_data(self.dataset.get_data()[self.PITCH]).get()
-
-    def get_roll(self):
-        return self.filter.set_data(self.dataset.get_data()[self.ROLL]).get()
-
-    def get_yaw(self):
-        return self.filter.set_data(self.dataset.get_data()[self.YAW]).get()
+        InertialAxis.__init__(self, self)
 
     def get_filter(self):
         return self.filter
 
 
-class Gyroscope:
+class Gyroscope(InertialAxis):
     """
     Accelerometer needed for calibration
     """
 
-    PITCH = "GyroXrad"
-    ROLL = "GyroZrad"
-    YAW = "GyroYrad"
+    AXIS_1 = "GyroXrad"
+    AXIS_2 = "GyroZrad"
+    AXIS_3 = "GyroYrad"
     CL_ZEROING = 0.05
 
     def __init__(self, dataset):
         self.dataset = dataset
         self.filter = Filter()
         self.filter.set_type(Filter.MEDIAN)
-        self.PITCH_OFFSET = 0
-        self.ROLL_OFFSET = 0
-        self.YAW_OFFSET = 0
-        self._calibrate()
-
-    def get_pitch(self):
-        return self.filter.set_data(self.dataset.get_data()[self.PITCH]).get() - self.PITCH_OFFSET
-
-    def get_roll(self):
-        return self.filter.set_data(self.dataset.get_data()[self.ROLL]).get() - self.ROLL_OFFSET
-
-    def get_yaw(self):
-        return self.filter.set_data(self.dataset.get_data()[self.YAW]).get() - self.YAW_OFFSET
+        InertialAxis.__init__(self, self)
 
     def get_filter(self):
         return self.filter
 
-    def _calibrate(self):
-        acc_pitch = self.dataset.get_accelerometer().get_pitch()
-        self.PITCH_OFFSET = median(self.get_pitch()[(acc_pitch < self.CL_ZEROING) & (acc_pitch > -self.CL_ZEROING)])
+    def calibrate(self):
+        acc_x = self.dataset.get_accelerometer().get_x()
+        self.X_OFFSET = median(self.get_pitch()[(acc_x < self.CL_ZEROING) & (acc_x > -self.CL_ZEROING)])
 
-        acc_roll = self.dataset.get_accelerometer().get_roll()
-        self.ROLL_OFFSET = median(self.get_roll()[(acc_roll < self.CL_ZEROING) & (acc_roll > -self.CL_ZEROING)])
+        acc_y = self.dataset.get_accelerometer().get_y()
+        self.Y_OFFSET = median(self.get_roll()[(acc_y < self.CL_ZEROING) & (acc_y > -self.CL_ZEROING)])
 
-        acc_yaw = self.dataset.get_accelerometer().get_yaw()
-        self.YAW_OFFSET = median(self.get_yaw()[(acc_yaw < self.CL_ZEROING) & (acc_yaw > -self.CL_ZEROING)])
+        acc_z = self.dataset.get_accelerometer().get_z()
+        self.Z_OFFSET = median(self.get_yaw()[(acc_z < self.CL_ZEROING) & (acc_z > -self.CL_ZEROING)])
+

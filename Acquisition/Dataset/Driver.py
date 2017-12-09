@@ -13,12 +13,11 @@ class SteeringAngle:
     def __init__(self, dataset):
         self.dataset = dataset
         self.ANGLE_OFFSET = 0
-        self._calibrate()
 
     def get(self):
         return self.dataset.get_data()[self.STEERING_ANGLE] - self.ANGLE_OFFSET
 
-    def _calibrate(self):
+    def calibrate(self):
         gyro_yaw = self.dataset.get_gyroscope().get_yaw()
         is_moving = (self.dataset.get_speed() > self.CL_MOVING_SPEED)
         is_not_turning = (gyro_yaw < self.CL_ZEROING) & (gyro_yaw > self.CL_ZEROING)

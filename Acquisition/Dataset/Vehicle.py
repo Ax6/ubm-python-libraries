@@ -21,10 +21,10 @@ class Speed:
 
 
 class Dampers:
-    FRONT_LEFT = "DamperFL"
-    FRONT_RIGHT = "DamperFR"
-    REAR_LEFT = "DamperRL"
-    REAR_RIGHT = "DamperRR"
+    FRONT_LEFT = "DamperFLmm"
+    FRONT_RIGHT = "DamperFRmm"
+    REAR_LEFT = "DamperRLmm"
+    REAR_RIGHT = "DamperRRmm"
 
     def __init__(self, dataset):
         self.dataset = dataset

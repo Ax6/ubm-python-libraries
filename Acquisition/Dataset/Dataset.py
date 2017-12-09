@@ -10,8 +10,13 @@ class Dataset:
 
     def __init__(self, data):
         self.original_data = data
+        NameCompatibility().fix(self)
         self.start_time = 0
         self.end_time = self._get_duration()
+        """
+        The order is IMU -> Vehicle -> Driver -> Internal
+        Important as they have dependencies
+        """
         self.accelerometer = IMU.Accelerometer(self)
         self.gyroscope = IMU.Gyroscope(self)
         self.speed = Vehicle.Speed(self)
@@ -21,6 +26,13 @@ class Dataset:
         self.brakes = Driver.Brakes(self)
         self.throttle = Driver.Throttle(self)
         self.temperatures = Internal.Temperatures(self)
+
+    def init(self):
+        self.gyroscope.calibrate()
+        self.steering_angle.calibrate()
+
+    def get_original_data(self):
+        return self.original_data
 
     def get_data(self):
         data_interval = self._get_data_interval()
@@ -71,3 +83,26 @@ class Dataset:
 
     def _get_duration(self):
         return len(self.original_data) / self.F_SAMPLING
+
+
+class NameCompatibility:
+    """
+    Another Luke pearl
+    """
+
+    # Right: Wrong
+    COMPATIBILITY_DICTIONARY = [
+        ('DamperFLmm', 'DamperFL'),
+        ('DamperFRmm', 'DamperFR'),
+        ('DamperRLmm', 'DamperRL'),
+        ('DamperRRmm', 'DamperRR')
+    ]
+
+    def __init__(self):
+        return
+
+    def fix(self, dataset):
+        for right, wrong in self.COMPATIBILITY_DICTIONARY:
+            if wrong in dataset.get_original_data().columns:
+                dataset.original_data[right] = dataset.original_data[wrong]
+                dataset.original_data[wrong] = None
