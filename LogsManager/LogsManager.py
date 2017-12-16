@@ -1,14 +1,13 @@
-from Acquisition.Acquisition import Acquisition
-from Acquisition.Dataset.Dataset import Dataset
+from Acquisition import Acquisition
+from Acquisition.Dataset import Dataset
 from collections import OrderedDict
 import glob
 import re
 import logging
-import numpy
 
 
 class LogsManager:
-    DEFAULT_PATH = '../log/*/'
+    DEFAULT_PATH = '../../Data/log_files/*/'
     SUPPORTED_TYPES = ['hdf', 'csv']
 
     def __init__(self, file_type=SUPPORTED_TYPES[0], directory=DEFAULT_PATH):
@@ -17,6 +16,7 @@ class LogsManager:
         self.logs_file_type = file_type
         self.logs_directory = directory
         self.log = logging.getLogger('LogsManager')
+        self.log.addHandler(logging.StreamHandler())
         self.log.setLevel(1)
         self.selected_logs = OrderedDict(
             [('dates', []), ('locations', []), ('specialities', []), ('drivers', []), ('attempts', [])])

@@ -1,4 +1,4 @@
-from numpy import *
+import numpy as np
 
 
 class Speed:
@@ -11,7 +11,7 @@ class Speed:
         self.dataset = dataset
 
     def get(self):
-        return mean(transpose([self.get_front_left(), self.get_front_right()]), 1)
+        return np.mean(np.transpose([self.get_front_left(), self.get_front_right()]), 1)
 
     def get_front_left(self):
         return self.dataset.get_data()[self.FRONT_LEFT]
