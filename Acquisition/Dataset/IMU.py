@@ -26,27 +26,27 @@ class InertialAxis:
 
     def get_raw_x(self):
         # As strange as it might seem, it is right.
-        # Thanks Luke for the erroneous Axis
-        return -self.dataset.get_data()[self.device.AXIS_1]
+        # Thanks Team-Luke for the erroneous Axis
+        return -self.dataset.get_data()[self.device.AXIS_X]
 
     def get_raw_y(self):
         # Same
-        return self.dataset.get_data()[self.device.AXIS_2]
+        return self.dataset.get_data()[self.device.AXIS_Z]
 
     def get_raw_z(self):
         # Same
-        return self.dataset.get_data()[self.device.AXIS_3]
+        return self.dataset.get_data()[self.device.AXIS_Y]
 
 
 class Accelerometer(InertialAxis):
-    AXIS_1 = "AccXg"
-    AXIS_2 = "AccZg"
-    AXIS_3 = "AccYg"
+    AXIS_X = "AccXg"
+    AXIS_Y = "AccYg"
+    AXIS_Z = "AccZg"
 
     def __init__(self, dataset):
         self.dataset = dataset
         self.filter = Filter()
-        self.filter.set_type(Filter.MEDIAN)
+        self.filter.set_type(Filter.TYPE_MEDIAN)
         InertialAxis.__init__(self, self)
 
     def get_filter(self):
@@ -58,15 +58,15 @@ class Gyroscope(InertialAxis):
     Accelerometer needed for calibration
     """
 
-    AXIS_1 = "GyroXrad"
-    AXIS_2 = "GyroZrad"
-    AXIS_3 = "GyroYrad"
+    AXIS_X = "GyroXrad"
+    AXIS_Y = "GyroYrad"
+    AXIS_Z = "GyroZrad"
     CL_ZEROING = 0.05
 
     def __init__(self, dataset):
         self.dataset = dataset
         self.filter = Filter()
-        self.filter.set_type(Filter.MEDIAN)
+        self.filter.set_type(Filter.TYPE_MEDIAN)
         InertialAxis.__init__(self, self)
 
     def get_filter(self):

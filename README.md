@@ -1,5 +1,5 @@
 # Unibo Motorsport - Data analysis
-***Python*** libraries for base data analysis and logs handling.
+**Python** libraries for base data analysis and logs handling.
 
 ## Refer to wiki for usage
 

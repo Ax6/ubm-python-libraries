@@ -10,7 +10,7 @@ class LogsManager:
     DEFAULT_PATH = '../../Data/log_files/*/'
     SUPPORTED_TYPES = ['hdf', 'csv']
 
-    def __init__(self, file_type=SUPPORTED_TYPES[0], directory=DEFAULT_PATH):
+    def __init__(self, directory=DEFAULT_PATH, file_type=SUPPORTED_TYPES[0]):
         self.log_count = 0
         self.log_paths = []
         self.logs_file_type = file_type

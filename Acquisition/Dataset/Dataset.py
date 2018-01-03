@@ -45,8 +45,6 @@ class Dataset:
         self.end_instant = Instant(time, Instant.TYPE_TIME)
 
     def get_time_axis(self):
-        print(self.start_instant.to_sample())
-        print(self.end_instant.to_sample())
         return self._get_interval().to_time()
 
     def get_accelerometer(self):
