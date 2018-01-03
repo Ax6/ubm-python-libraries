@@ -70,6 +70,10 @@ class RideHeight:
 
 
 class PhonicWheel:
+
+    OUTLIERS_THRESHOLD = 4
+    OUTLIERS_WINDOW = 48
+
     def __init__(self, dataset, position):
         self.dataset = dataset
         self.position = position
@@ -97,9 +101,9 @@ class PhonicWheel:
 
     def _get_filtered(self):
         self.filter.set_data(self.get_raw())
-        no_outliers = self.filter.remove_outliers(4, 48)
+        no_outliers = self.filter.remove_outliers(self.OUTLIERS_THRESHOLD, self.OUTLIERS_WINDOW)
         self.filter.set_data(no_outliers)
-        working_intervals = self.filter.detect_stuck(48)
+        working_intervals = self.filter.detect_stuck(self.OUTLIERS_WINDOW)
         calc_from_opposite = self._calc_on_wheel()
         no_outliers[working_intervals == 0] = calc_from_opposite[working_intervals == 0]
         self.filter.set_data(no_outliers)
