@@ -31,33 +31,37 @@ class LogsManager:
 
     def get_merged_dataset(self):
         selected_names = self.get_selected_log_names()
-        print(selected_names)
         data = None
         for name in selected_names:
             if data is None:
                 data = self.get_selected_data(name)
             else:
                 data.append(self.get_selected_data(name))
-        print(data)
         return Dataset(data)
 
     def set_dates(self, dates):
-        self.selected_logs['dates'] = dates
+        self.selected_logs['dates'] = self._parse_set(dates)
+        return self
 
     def set_locations(self, locations):
-        self.selected_logs['locations'] = locations
+        self.selected_logs['locations'] = self._parse_set(locations)
+        return self
 
     def set_specialities(self, specialities):
-        self.selected_logs['specialities'] = specialities
+        self.selected_logs['specialities'] = self._parse_set(specialities)
+        return self
 
     def set_drivers(self, drivers):
-        self.selected_logs['drivers'] = drivers
+        self.selected_logs['drivers'] = self._parse_set(drivers)
+        return self
 
     def set_attempts(self, attempts):
-        self.selected_logs['attempts'] = attempts
+        self.selected_logs['attempts'] = self._parse_set(attempts)
+        return self
 
     def set_variables(self, variable_names):
-        self.selected_variable_names = variable_names
+        self.selected_variable_names = self._parse_set(variable_names)
+        return self
 
     def get_selected_data(self, log_name):
         data = self.get_acquisition(log_name).get_dataset().get_original_data()
@@ -99,6 +103,12 @@ class LogsManager:
         else:
             regex_piece = '.*'
         return regex_piece
+
+    def _parse_set(self, argument):
+        parsed = argument
+        if isinstance(argument, str):
+            parsed = [argument]
+        return parsed
 
 
 class LogPath:

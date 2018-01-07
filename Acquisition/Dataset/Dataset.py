@@ -13,7 +13,7 @@ class Dataset:
         self.original_data = data
         NameCompatibility().fix(self)
         self.start_instant = Instant(0)
-        self.end_instant = Instant(self._get_total_duration(), Instant.TYPE_TIME)
+        self.end_instant = Instant(self.get_size())
         """
         The order is IMU -> Vehicle -> Driver -> Internal
         Important as they have dependencies
@@ -27,6 +27,7 @@ class Dataset:
         self.brakes = Driver.Brakes(self)
         self.throttle = Driver.Throttle(self)
         self.temperatures = Internal.Temperatures(self)
+        self.init()
 
     def init(self):
         self.gyroscope.calibrate()
@@ -36,7 +37,7 @@ class Dataset:
         return self.original_data
 
     def get_data(self):
-        return self.original_data[:][self.start_instant.to_sample():self.end_instant.to_sample()]
+        return self.original_data[:][self.get_interval().to_index()]
 
     def set_start_time(self, time):
         self.start_instant = Instant(time, Instant.TYPE_TIME)
@@ -45,7 +46,7 @@ class Dataset:
         self.end_instant = Instant(time, Instant.TYPE_TIME)
 
     def get_time_axis(self):
-        return self._get_interval().to_time()
+        return self.get_interval().to_time()
 
     def get_accelerometer(self):
         return self.accelerometer
@@ -74,11 +75,17 @@ class Dataset:
     def get_temperatures(self):
         return self.temperatures
 
-    def _get_interval(self):
-        return Interval(self.start_instant, self.end_instant)
+    def get_size(self):
+        return len(self.original_data)
 
-    def _get_total_duration(self):
-        return len(self.original_data) / self.F_SAMPLING
+    def get_samples_count(self):
+        return len(self.get_data())
+
+    def get_duration(self):
+        return self.get_samples_count() / self.F_SAMPLING
+
+    def get_interval(self):
+        return Interval(self.start_instant, self.end_instant)
 
 
 class NameCompatibility:
@@ -114,6 +121,9 @@ class Interval:
         """
         self.start = start
         self.end = end
+
+    def to_index(self):
+        return np.s_[self.start.to_sample():self.end.to_sample()]
 
     def to_sample(self):
         return np.r_[self.start.to_sample():self.end.to_sample()]

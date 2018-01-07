@@ -15,6 +15,7 @@ class Filter:
     def __init__(self):
         self.type = self.TYPE_SGOLAY
         self.data = []
+        self._diff = None
         self.PARAMETERS = {
             self.TYPE_SGOLAY: {
                 self.PARAM_WINDOW_LENGTH: 31,
@@ -27,6 +28,7 @@ class Filter:
 
     def set_data(self, data):
         self.data = data
+        self._diff = None
         return self
 
     def set_type(self, flt_type):
@@ -69,10 +71,25 @@ class Filter:
         :param threshold: Number of samples needed for stuck marking
         :return:
         """
-        diff_data = np.diff(self.data)
-        diff_data = np.append(diff_data, diff_data[-1])
-        diff_data[np.abs(diff_data) > 0] = 1
-        return signal.medfilt(diff_data, [threshold * 2 - 1])
+        d_data = self.get_derivative()
+        d_data[np.abs(d_data) > 0] = 1
+        return signal.medfilt(d_data, [threshold * 2 - 1])
+
+    def get_line_interpolation(self):
+        d_data = self.get_derivative()
+        d_mean = np.mean(d_data[0:90000])
+        mean = np.mean(self.data)
+        half_s_len = len(self.data) / 2
+        return [(index - half_s_len) * d_mean + mean for index, val in enumerate(self.data)]
+
+    def get_derivative(self):
+        if self._diff is None:
+            self._diff = np.diff(self.data)
+            self._diff = np.append(self._diff[0], self._diff)
+        return self._diff
+
+    def in_range(self, lower_bound, upper_bound):
+        return (lower_bound < self.data) & (self.data < upper_bound)
 
     def _get_params(self, flt_type):
         return self.PARAMETERS[flt_type]

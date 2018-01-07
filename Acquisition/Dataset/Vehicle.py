@@ -84,7 +84,7 @@ class PhonicWheel:
     def get(self):
         if self.filtered is None:
             self.filtered = self._get_filtered()
-        return self.filtered
+        return self.filtered[self.dataset.get_interval().to_index()]
 
     def get_raw(self):
         return self.dataset.get_data()[self.position]
