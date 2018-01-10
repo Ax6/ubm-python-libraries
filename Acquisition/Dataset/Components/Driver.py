@@ -1,5 +1,6 @@
 import numpy as np
 from Acquisition.Filter import Filter
+from Acquisition.Dataset.Names import Names
 
 
 class SteeringAngle:
@@ -7,7 +8,7 @@ class SteeringAngle:
     Gyroscope and Speed needed for calibration
     """
 
-    STEERING_ANGLE = "SteeringAngle"
+    STEERING_ANGLE = Names.Driver["SteeringAngle"]
     ZEROING_CALI = 0.1
     CL_MOVING_SPEED = 5
     OUT_TRIGGER = 50
@@ -26,13 +27,14 @@ class SteeringAngle:
 
     def calibrate(self):
         lateral_force = self.dataset.get_accelerometer().get_roll()
-        is_moving = (self.dataset.get_speed() > self.CL_MOVING_SPEED)
+        is_moving = (self.dataset.get() > self.CL_MOVING_SPEED)
         is_not_turning = (lateral_force < self.ZEROING_CALI) & (lateral_force > -self.ZEROING_CALI)
         self.ANGLE_OFFSET = np.median(self.get()[is_moving & is_not_turning])
 
 
 class Throttle:
-    THROTTLE = "Throttle"
+
+    THROTTLE = Names.Driver["Throttle"]
 
     def __init__(self, dataset):
         self.dataset = dataset
@@ -42,8 +44,8 @@ class Throttle:
 
 
 class Brakes:
-    FRONT_PRESSURE = "PbrakeFrontBar"
-    REAR_PRESSURE = "PbrakeRearBar"
+
+    FRONT_PRESSURE, REAR_PRESSURE = Names.Driver["Brakes"]
 
     def __init__(self, dataset):
         self.dataset = dataset

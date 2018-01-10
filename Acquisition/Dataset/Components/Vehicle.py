@@ -1,12 +1,10 @@
 import numpy as np
 from Acquisition.Filter import Filter
+from Acquisition.Dataset.Names import Names
 
 
 class Speed:
-    FRONT_LEFT = "SpeedFLKmh"
-    FRONT_RIGHT = "SpeedFRKmh"
-    REAR_LEFT = "SpeedRLKmh"
-    REAR_RIGHT = "SpeedRRKmh"
+    FRONT_LEFT, FRONT_RIGHT, REAR_LEFT, REAR_RIGHT = Names.Vehicle["PhonicWheels"]
 
     def __init__(self, dataset):
         self.dataset = dataset
@@ -26,10 +24,7 @@ class Speed:
 
 
 class Dampers:
-    FRONT_LEFT = "DamperFLmm"
-    FRONT_RIGHT = "DamperFRmm"
-    REAR_LEFT = "DamperRLmm"
-    REAR_RIGHT = "DamperRRmm"
+    FRONT_LEFT, FRONT_RIGHT, REAR_LEFT, REAR_RIGHT = Names.Vehicle["Dampers"]
 
     def __init__(self, dataset):
         self.dataset = dataset
@@ -48,10 +43,7 @@ class Dampers:
 
 
 class RideHeight:
-    FRONT_LEFT = "FLHeightmm"
-    FRONT_RIGHT = "FRHeightmm"
-    REAR_LEFT = "RLHeightmm"
-    REAR_RIGHT = "RRHeightmm"
+    FRONT_LEFT, FRONT_RIGHT, REAR_LEFT, REAR_RIGHT = Names.Vehicle["RideHeight"]
 
     def __init__(self, dataset):
         self.dataset = dataset

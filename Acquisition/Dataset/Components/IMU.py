@@ -1,4 +1,5 @@
 from Acquisition.Filter import Filter
+from Acquisition.Dataset.Names import Names
 import numpy as np
 
 
@@ -59,9 +60,8 @@ class InertialAxis:
 
 
 class Accelerometer(InertialAxis):
-    AXIS_X = "AccXg"
-    AXIS_Y = "AccYg"
-    AXIS_Z = "AccZg"
+
+    AXIS_X, AXIS_Y, AXIS_Z = Names.IMU["Accelerometer"]
     ZERO_BOUNDARY = 0.05
 
     def __init__(self, dataset):
@@ -91,9 +91,7 @@ class Gyroscope(InertialAxis):
     Accelerometer needed for calibration
     """
 
-    AXIS_X = "GyroXrad"
-    AXIS_Y = "GyroYrad"
-    AXIS_Z = "GyroZrad"
+    AXIS_X, AXIS_Y, AXIS_Z = Names.IMU["Gyroscope"]
     CL_ZEROING = 0.66
 
     def __init__(self, dataset):

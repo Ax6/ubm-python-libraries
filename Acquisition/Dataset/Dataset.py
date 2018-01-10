@@ -1,9 +1,10 @@
-import numpy as np
 import math
-from Acquisition.Dataset import IMU
-from Acquisition.Dataset import Vehicle
-from Acquisition.Dataset import Driver
-from Acquisition.Dataset import Internal
+import numpy as np
+from Acquisition.Dataset.Names import Names
+from Acquisition.Dataset.Components import Driver
+from Acquisition.Dataset.Components import IMU
+from Acquisition.Dataset.Components import Vehicle
+from Acquisition.Dataset.Components import Internal
 
 
 class Dataset:
@@ -11,7 +12,7 @@ class Dataset:
 
     def __init__(self, data):
         self.original_data = data
-        NameCompatibility().fix(self)
+        Names().fix(self)
         self.start_instant = Instant(0)
         self.end_instant = Instant(self.get_size())
         """
@@ -86,29 +87,6 @@ class Dataset:
 
     def get_interval(self):
         return Interval(self.start_instant, self.end_instant)
-
-
-class NameCompatibility:
-    """
-    Another Luke pearl
-    """
-
-    # (Right, Wrong)
-    COMPATIBILITY_DICTIONARY = [
-        ('DamperFLmm', 'DamperFL'),
-        ('DamperFRmm', 'DamperFR'),
-        ('DamperRLmm', 'DamperRL'),
-        ('DamperRRmm', 'DamperRR')
-    ]
-
-    def __init__(self):
-        return
-
-    def fix(self, dataset):
-        for right, wrong in self.COMPATIBILITY_DICTIONARY:
-            if wrong in dataset.get_original_data().columns:
-                dataset.original_data[right] = dataset.original_data[wrong]
-                dataset.original_data[wrong] = None
 
 
 class Interval:
