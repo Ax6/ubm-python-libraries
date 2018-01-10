@@ -27,7 +27,7 @@ class SteeringAngle:
 
     def calibrate(self):
         lateral_force = self.dataset.get_accelerometer().get_roll()
-        is_moving = (self.dataset.get() > self.CL_MOVING_SPEED)
+        is_moving = (self.dataset.get_speed() > self.CL_MOVING_SPEED)
         is_not_turning = (lateral_force < self.ZEROING_CALI) & (lateral_force > -self.ZEROING_CALI)
         self.ANGLE_OFFSET = np.median(self.get()[is_moving & is_not_turning])
 
