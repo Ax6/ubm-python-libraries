@@ -8,8 +8,8 @@ class SteeringAngle:
     """
 
     STEERING_ANGLE = "SteeringAngle"
-    CL_ZEROING = 0.1
-    CL_MOVING_SPEED = 10
+    ZEROING_CALI = 0.1
+    CL_MOVING_SPEED = 5
     OUT_TRIGGER = 50
     OUT_LEN = 32
 
@@ -25,9 +25,9 @@ class SteeringAngle:
         return self.dataset.get_data()[self.STEERING_ANGLE]
 
     def calibrate(self):
-        gyro_yaw = self.dataset.get_gyroscope().get_yaw()
+        lateral_force = self.dataset.get_accelerometer().get_roll()
         is_moving = (self.dataset.get_speed() > self.CL_MOVING_SPEED)
-        is_not_turning = (gyro_yaw < self.CL_ZEROING) & (gyro_yaw > -self.CL_ZEROING)
+        is_not_turning = (lateral_force < self.ZEROING_CALI) & (lateral_force > -self.ZEROING_CALI)
         self.ANGLE_OFFSET = np.median(self.get()[is_moving & is_not_turning])
 
 

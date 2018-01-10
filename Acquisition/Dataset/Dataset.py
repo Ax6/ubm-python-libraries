@@ -30,7 +30,7 @@ class Dataset:
         self.init()
 
     def init(self):
-        self.gyroscope.calibrate()
+        #self.gyroscope.calibrate()
         self.steering_angle.calibrate()
 
     def get_original_data(self):
@@ -93,7 +93,7 @@ class NameCompatibility:
     Another Luke pearl
     """
 
-    # Right: Wrong
+    # (Right, Wrong)
     COMPATIBILITY_DICTIONARY = [
         ('DamperFLmm', 'DamperFL'),
         ('DamperFRmm', 'DamperFR'),
