@@ -14,6 +14,7 @@ setup(
     install_requires=[
         'numpy',
         'scipy',
-        'pandas'
+        'pandas',
+        'matplotlib'
     ],
 )
