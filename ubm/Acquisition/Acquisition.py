@@ -1,5 +1,5 @@
-from Acquisition.Dataset.Dataset import Dataset
 import pandas
+from ubm.acquisition.dataset import Dataset
 
 
 class Acquisition:

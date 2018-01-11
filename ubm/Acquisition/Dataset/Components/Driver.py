@@ -1,7 +1,6 @@
 import numpy as np
-from Acquisition.Filter import Filter
-from Acquisition.Dataset.Names import Names
-
+from ubm.acquisition.dataset.names import Names
+from ubm.acquisition.filter import Filter
 
 class SteeringAngle:
     """

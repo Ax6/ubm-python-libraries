@@ -1,10 +1,9 @@
 import math
 import numpy as np
-from Acquisition.Dataset.Names import Names
-from Acquisition.Dataset.Components import Driver
-from Acquisition.Dataset.Components import IMU
-from Acquisition.Dataset.Components import Vehicle
-from Acquisition.Dataset.Components import Internal
+from ubm.acquisition.dataset.names import Names
+from ubm.acquisition.dataset.components import driver, imu
+from ubm.acquisition.dataset.components import internal
+from ubm.acquisition.dataset.components import vehicle
 
 
 class Dataset:
@@ -19,15 +18,15 @@ class Dataset:
         The order is IMU -> Vehicle -> Driver -> Internal
         Important as they have dependencies
         """
-        self.accelerometer = IMU.Accelerometer(self)
-        self.gyroscope = IMU.Gyroscope(self)
-        self.speed = Vehicle.Speed(self)
-        self.dampers = Vehicle.Dampers(self)
-        self.ride_height = Vehicle.RideHeight(self)
-        self.steering_angle = Driver.SteeringAngle(self)
-        self.brakes = Driver.Brakes(self)
-        self.throttle = Driver.Throttle(self)
-        self.temperatures = Internal.Temperatures(self)
+        self.accelerometer = imu.Accelerometer(self)
+        self.gyroscope = imu.Gyroscope(self)
+        self.speed = vehicle.Speed(self)
+        self.dampers = vehicle.Dampers(self)
+        self.ride_height = vehicle.RideHeight(self)
+        self.steering_angle = driver.SteeringAngle(self)
+        self.brakes = driver.Brakes(self)
+        self.throttle = driver.Throttle(self)
+        self.temperatures = internal.Temperatures(self)
         self.init()
 
     def init(self):

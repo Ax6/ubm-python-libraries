@@ -1,6 +1,6 @@
-from Acquisition.Filter import Filter
-from Acquisition.Dataset.Names import Names
 import numpy as np
+from ubm.acquisition.dataset.names import Names
+from ubm.acquisition.filter import Filter
 
 
 class InertialAxis:

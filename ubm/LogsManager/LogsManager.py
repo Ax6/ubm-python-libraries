@@ -1,9 +1,10 @@
-from Acquisition import Acquisition
-from Acquisition.Dataset import Dataset
-from collections import OrderedDict
 import glob
-import re
 import logging
+import re
+from collections import OrderedDict
+
+from ubm.acquisition import Acquisition
+from ubm.acquisition import dataset
 
 
 class LogsManager:
@@ -15,7 +16,7 @@ class LogsManager:
         self.log_paths = []
         self.logs_file_type = file_type
         self.logs_directory = directory
-        self.log = logging.getLogger('LogsManager')
+        self.log = logging.getLogger('logsManager')
         self.log.addHandler(logging.StreamHandler())
         self.log.setLevel(1)
         self.selected_logs = OrderedDict(
@@ -37,7 +38,7 @@ class LogsManager:
                 data = self.get_selected_data(name)
             else:
                 data.append(self.get_selected_data(name))
-        return Dataset(data)
+        return dataset(data)
 
     def set_dates(self, dates):
         self.selected_logs['dates'] = self._parse_set(dates)

@@ -1,1 +1,0 @@
-from LogsManager.LogsManager import LogsManager as Manager
