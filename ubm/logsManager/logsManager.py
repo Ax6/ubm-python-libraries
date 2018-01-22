@@ -1,21 +1,21 @@
-import glob
-import logging
-import re
+import glob, logging, re, os
+import numpy as np
 from collections import OrderedDict
-
 from ubm.acquisition import Acquisition
-from ubm.acquisition import dataset
+from ubm.acquisition.dataset import Dataset
 
 
 class LogsManager:
-    DEFAULT_PATH = '../../Data/log_files/*/'
+    DEFAULT_PATH = 'Data/log_files/*/'
     SUPPORTED_TYPES = ['hdf', 'csv']
+    MAX_SEEK_DEPTH = -5
 
     def __init__(self, directory=DEFAULT_PATH, file_type=SUPPORTED_TYPES[0]):
         self.log_count = 0
         self.log_paths = []
         self.logs_file_type = file_type
         self.logs_directory = directory
+        self.search_directory = ""
         self.log = logging.getLogger('logsManager')
         self.log.addHandler(logging.StreamHandler())
         self.log.setLevel(1)
@@ -23,7 +23,7 @@ class LogsManager:
             [('dates', []), ('locations', []), ('specialities', []), ('drivers', []), ('attempts', [])])
         self.selected_variable_names = []
         self._load()
-        self.log.info("Loaded " + str(len(self.log_paths)) + " logs, from " + self.logs_directory)
+        self.log.info("Loaded " + str(len(self.log_paths)) + " logs, from " + self.search_directory)
 
     def get_acquisition(self, name):
         for log_path in self.log_paths:
@@ -38,7 +38,7 @@ class LogsManager:
                 data = self.get_selected_data(name)
             else:
                 data.append(self.get_selected_data(name))
-        return dataset(data)
+        return Dataset(data)
 
     def set_dates(self, dates):
         self.selected_logs['dates'] = self._parse_set(dates)
@@ -85,9 +85,20 @@ class LogsManager:
         return matches
 
     def _load(self):
-        paths = glob.glob(self.logs_directory + self.logs_file_type + '/*.' + self.logs_file_type)
+        paths = []
+        for depth in np.arange(0, self.MAX_SEEK_DEPTH, -1):
+            self.search_directory = self._build_search_directory(depth)
+            paths = glob.glob(self.search_directory)
+            if len(paths):
+                break
         for raw_path in paths:
             self.log_paths.append(LogPath(raw_path))
+
+    def _build_search_directory(self, depth):
+        return '/'.join((os.getcwd() + '/').split('/')[:(depth - 1)]) + '/' + self._build_logs_directory()
+
+    def _build_logs_directory(self):
+        return self.logs_directory + self.logs_file_type + '/*.' + self.logs_file_type
 
     def _build_selection_regexp(self):
         regex = ''

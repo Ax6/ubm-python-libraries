@@ -45,12 +45,12 @@ class Names:
     Another Luke pearl
     """
 
-    # (Right, Wrong)
+    # (Right, Wrong[, wrong ...])
     COMPATIBILITY_DICTIONARY = [
-        ('DamperFLmm', 'DamperFL'),
-        ('DamperFRmm', 'DamperFR'),
-        ('DamperRLmm', 'DamperRL'),
-        ('DamperRRmm', 'DamperRR'),
+        ('DamperFL_mm', 'DamperFL', 'DamperFLmm'),
+        ('DamperFR_mm', 'DamperFR', 'DamperFRmm'),
+        ('DamperRL_mm', 'DamperRL', 'DamperFRmm'),
+        ('DamperRR_mm', 'DamperRR', 'DamperRRmm'),
     ]
 
     Driver = {
@@ -74,7 +74,7 @@ class Names:
 
     Vehicle = {
         "PhonicWheels": ('SpeedFLKmh', 'SpeedFRKmh', 'SpeedRLKmh', 'SpeedRRKmh'),
-        "Dampers": ('DamperFLmm', 'DamperFRmm', 'DamperRLmm', 'DamperRRmm'),
+        "Dampers": ('DamperFL_mm', 'DamperFR_mm', 'DamperRL_mm', 'DamperRR_mm'),
         "RideHeight": ('FLHeightmm', 'FRHeightmm', 'RLHeightmm', 'RRHeightmm')
     }
 
@@ -82,7 +82,9 @@ class Names:
         return
 
     def fix(self, dataset):
-        for right, wrong in self.COMPATIBILITY_DICTIONARY:
-            if wrong in dataset.get_original_data().columns:
-                dataset.original_data[right] = dataset.original_data[wrong]
-                dataset.original_data[wrong] = None
+        for lookup in self.COMPATIBILITY_DICTIONARY:
+            right, errors = lookup[0], lookup[1:]
+            for wrong in errors:
+                if wrong in dataset.get_original_data().columns:
+                    dataset.original_data[right] = dataset.original_data[wrong]
+                    dataset.original_data[wrong] = None
