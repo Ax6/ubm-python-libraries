@@ -60,12 +60,13 @@ class Names:
     }
 
     Engine = {
-
-    }
-
-    IMU = {
-        "Accelerometer": ('AccXg', 'AccYg', 'AccZg'),
-        "Gyroscope": ('GyroXrad', 'GyroYrad', 'GyroZrad')
+        "Cylinder": {
+            "Lambda": ('Lambdacyl1', 'Lambdacyl2', 'Lambdacyl3', 'Lambdacyl4'),
+            "InjectedMass": ('Mjactcyl1', 'Mjactcyl2', 'Mjactcyl3', 'Mjactcyl4'),
+            "FilmMass": ('Mjfilmcyl1', 'Mjfilmcyl2', 'Mjfilmcyl3', 'Mjfilmcyl4')
+        },
+        "LambdaTarget": 'LambdaTargetact',
+        "RPM": 'RPM'
     }
 
     Internal = {
@@ -76,6 +77,11 @@ class Names:
         "PhonicWheels": ('SpeedFLKmh', 'SpeedFRKmh', 'SpeedRLKmh', 'SpeedRRKmh'),
         "Dampers": ('DamperFL_mm', 'DamperFR_mm', 'DamperRL_mm', 'DamperRR_mm'),
         "RideHeight": ('FLHeightmm', 'FRHeightmm', 'RLHeightmm', 'RRHeightmm')
+    }
+
+    IMU = {
+        "Accelerometer": ('AccXg', 'AccYg', 'AccZg'),
+        "Gyroscope": ('GyroXrad', 'GyroYrad', 'GyroZrad')
     }
 
     def __init__(self):

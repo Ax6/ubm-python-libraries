@@ -1,5 +1,4 @@
 import numpy as np
-
 from ubm.acquisition.dataset.names import Names
 from ubm.acquisition.filter import Filter
 
