@@ -30,6 +30,7 @@ class Dataset:
         self.init()
 
     def init(self):
+        self.accelerometer.calibrate()
         self.gyroscope.calibrate()
         self.steering_angle.calibrate()
 

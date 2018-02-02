@@ -4,7 +4,6 @@ from ubm.acquisition.filter import Filter
 
 
 class InertialAxis:
-
     def __init__(self, device):
         self.device = device
         self.filter = device.filter
@@ -55,14 +54,23 @@ class InertialAxis:
         if offset_size == self.dataset.get_size():
             return defined_offset[self.dataset.get_interval().to_index()]
         if offset_size > 0:
-            return np.r_(defined_offset)[0]
+            return np.r_[defined_offset][0]
         return 0
+
+    def set_x_offset(self, offset):
+        self.X_OFFSET = offset
+
+    def set_y_offset(self, offset):
+        self.Y_OFFSET = offset
+
+    def set_z_offset(self, offset):
+        self.Z_OFFSET = offset
 
 
 class Accelerometer(InertialAxis):
-
     AXIS_X, AXIS_Y, AXIS_Z = Names.IMU["Accelerometer"]
     ZERO_BOUNDARY = 0.05
+    GRAVITY = 1
 
     def __init__(self, dataset):
         self.dataset = dataset
@@ -81,9 +89,20 @@ class Accelerometer(InertialAxis):
         if self._zero_ is None:
             x_sel = self.filter.set_data(self.get_x()).in_range(lower_bound, upper_bound)
             y_sel = self.filter.set_data(self.get_y()).in_range(lower_bound, upper_bound)
-            z_sel = self.filter.set_data(self.get_z() + 1).in_range(lower_bound, upper_bound)
+            z_sel = self.filter.set_data(self.get_z() + self.GRAVITY).in_range(lower_bound, upper_bound)
             self._zero_ = x_sel & y_sel & z_sel
         return self._zero_[self.dataset.get_interval().to_index()]
+
+    def calibrate(self):
+        self.set_x_offset(self._get_zeroing_offset(self.get_x()))
+        self.set_y_offset(self._get_zeroing_offset(self.get_y()))
+        self.set_z_offset(self._get_zeroing_offset(self.get_z(), -1))
+
+    def _get_zeroing_offset(self, data, target=0):
+        median = np.median(data)
+        if (target - self.ZERO_BOUNDARY) < median < (target + self.ZERO_BOUNDARY):
+            return target - median
+        return 0
 
 
 class Gyroscope(InertialAxis):
