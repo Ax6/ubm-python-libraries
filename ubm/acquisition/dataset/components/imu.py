@@ -71,12 +71,14 @@ class Accelerometer(InertialAxis):
     AXIS_X, AXIS_Y, AXIS_Z = Names.IMU["Accelerometer"]
     ZERO_BOUNDARY = 0.05
     GRAVITY = 1
+    FILTER_WINDOW = 15
 
     def __init__(self, dataset):
         self.dataset = dataset
         self.filter = Filter()
         self.filter.set_type(Filter.TYPE_MEDIAN)
         self._zero_ = None
+        self.filter.set_param(Filter.PARAM_WINDOW_LENGTH, self.FILTER_WINDOW)
         InertialAxis.__init__(self, self)
 
     def get_filter(self):
@@ -112,11 +114,13 @@ class Gyroscope(InertialAxis):
 
     AXIS_X, AXIS_Y, AXIS_Z = Names.IMU["Gyroscope"]
     CL_ZEROING = 0.66
+    FILTER_WINDOW = 15
 
     def __init__(self, dataset):
         self.dataset = dataset
         self.filter = Filter()
         self.filter.set_type(Filter.TYPE_MEDIAN)
+        self.filter.set_param(Filter.PARAM_WINDOW_LENGTH, self.FILTER_WINDOW)
         InertialAxis.__init__(self, self)
 
     def get_filter(self):
