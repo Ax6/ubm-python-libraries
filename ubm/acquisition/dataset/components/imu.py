@@ -34,7 +34,7 @@ class InertialAxis:
 
     def get_raw_y(self):
         # Same
-        return self.dataset.get_data()[self.device.AXIS_Z]
+        return -self.dataset.get_data()[self.device.AXIS_Z]
 
     def get_raw_z(self):
         # Same

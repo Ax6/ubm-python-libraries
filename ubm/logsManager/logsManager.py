@@ -1,5 +1,6 @@
 import glob, logging, re, os
 import numpy as np
+import pandas as pd
 from collections import OrderedDict
 from ubm.acquisition import Acquisition
 from ubm.acquisition.dataset import Dataset
@@ -32,13 +33,10 @@ class LogsManager:
 
     def get_merged_dataset(self):
         selected_names = self.get_selected_log_names()
-        data = None
+        data_frames = []
         for name in selected_names:
-            if data is None:
-                data = self.get_selected_data(name)
-            else:
-                data.append(self.get_selected_data(name))
-        return Dataset(data)
+            data_frames.append(self.get_selected_data(name))
+        return Dataset(pd.concat(data_frames))
 
     def set_dates(self, dates):
         self.selected_logs['dates'] = self._parse_set(dates)
